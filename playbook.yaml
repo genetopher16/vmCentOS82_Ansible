@@ -1,0 +1,33 @@
+---
+- hosts: vm1
+  
+  tasks:
+  - name: ping pong vm1
+    ping:
+
+  - name: use shell and query id
+    shell: "id"
+
+  - name: ansible download file ansible.conf
+    get_url:
+      url: http://192.168.43.82:8090/RPM-GPG-KEY-EPEL-8
+      dest: /etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-8
+      mode: '0644'
+
+  - name: install latest Apache
+    yum:
+      name: httpd
+      state: present
+
+  - name: install now
+    service:
+      name: httpd
+      state: started
+      enabled: yes
+
+  - name: enable firewall
+    firewalld:
+      port: 80/tcp
+      permanent: yes
+      state: enabled
+      immediate: yes
